@@ -181,3 +181,47 @@ export async function askKananaAudio(question: string) {
 
   return { content: fullText, audioBase64: resultAudioB64 };
 }
+
+export async function askKananaImage(imageBase64: string, question: string = "이 이미지에 무엇이 있는지, 자세히 설명해줘") {
+  const apiKey = process.env.KANANA_O_API_KEY;
+  if (!apiKey) {
+    throw new Error("환경 변수에 KANANA_O_API_KEY가 설정되지 않았습니다.");
+  }
+
+  // 데이터 URI 접두사가 있을 경우 제거하여 순수 base64만 확보
+  const rawBase64 = imageBase64.replace(/^data:image\/[a-z]+;base64,/, "");
+
+  const response = await fetch("https://kanana-o.a2s-endpoint.kr-central-2.kakaocloud.com/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${apiKey}`
+    },
+    body: JSON.stringify({
+      model: "kanana-o",
+      messages: [
+        {
+          role: "user",
+          content: [
+            { type: "image_url", image_url: { url: rawBase64 } },
+            { type: "text", text: question }
+          ]
+        }
+      ]
+    })
+  });
+
+  if (!response.ok) {
+    const errText = await response.text();
+    throw new Error(`이미지 분석 API 호출 실패 [${response.status}]: ${errText}`);
+  }
+
+  const data = await response.json();
+  const content = data.choices?.[0]?.message?.content;
+  
+  if (!content) {
+    throw new Error("서버에서 메시지 응답을 반환하지 않았습니다.");
+  }
+
+  return content;
+}
