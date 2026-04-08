@@ -2,6 +2,8 @@
 
 카카오의 차세대 AI 'Kanana-O' 베타테스트를 위해 제작된 AI 고민 해결/비교 웹 애플리케이션입니다. 두 가지 상황을 입력하면 카나나가 어떤 선택이 더 나을지 판별하고, 그 이유와 설명을 **텍스트**나 직접 소리내어 말하는 **오디오(음성)** 형태로 알려줍니다.
 
+🌎 **라이브 데모 사이트 배포 주소**: [https://kakao-kanana-o-beta-tester.vercel.app/](https://kakao-kanana-o-beta-tester.vercel.app/)
+
 <br/>
 
 ## ✨ 주요 기능
